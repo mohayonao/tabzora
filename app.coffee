@@ -2,8 +2,16 @@ http    = require "http"
 express = require "express"
 Iconv   = require("iconv").Iconv
 
-aozora_parse = (html)->
+app = module.exports = express.createServer()
 
+app.configure ->
+    app.use express.bodyParser()
+    app.use express.methodOverride()
+    app.use app.router
+    app.use express.static("#{__dirname}/public")
+
+
+aozora_parse = (html)->
     re = /<h1 class="title">(.+?)<\/h1>(?:[\s\S]*?)<h2 class="author">(.+?)<\/h2>(?:[\s\S]*?)<div class="main_text">([\s\S]+)<div class="bibliographical_information">/
     matches = re.exec html
     if matches
@@ -13,16 +21,8 @@ aozora_parse = (html)->
         text = text.replace(/<.*?>/g, "")
         return {title:title, author:author, text:text}
 
-app = module.exports = express.createServer()
-
-app.configure ->
-    app.use express.bodyParser()
-    app.use express.methodOverride()
-    app.use app.router
-    app.use express.static("#{__dirname}/public")
 
 app.get "/q/:query?", (req, res)->
-
     re = /^(?:http:\/\/www\.aozora\.gr\.jp)?(\/cards\/(?:\d+)\/files\/(?:\d+)_(?:\d+)\.html)$/
     matches = re.exec req.params.query
 
