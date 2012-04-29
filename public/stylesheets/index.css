@@ -83,6 +83,11 @@ footer {
     display: inline;
 }
 
+#social-button .google_plus {
+    position: relative;
+    top: -1px;
+}
+
 #social-button .facebook {
     position: relative;
     top: 5px;
