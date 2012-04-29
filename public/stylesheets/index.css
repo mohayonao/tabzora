@@ -1,0 +1,47 @@
+h1 {
+    margin: 0px; padding: 0px;
+    font-size: 64px;
+    font-family: serif;
+    text-shadow: 3px 3px 10px gray;
+}
+
+input {
+    margin: 0px; padding: 10px;
+    font-size: 24px;
+    width: 100%;
+    background: #dcdcdc;
+    border-style: none;
+}
+
+a {
+    color: blue;
+}
+
+a:hover {
+    color: deeppink;
+}
+
+#info {
+    margin: 10px;
+    height: 30px;
+}
+
+#usage {
+    margin: 25px;
+}
+
+#booklist li {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    display: inline;
+    padding: 0px 5px;
+}
+
+#booklist li:hover {
+    color: deeppink;
+}
+
+.right {
+    float: right;
+}
