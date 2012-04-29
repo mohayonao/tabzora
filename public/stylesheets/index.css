@@ -55,3 +55,12 @@ a:hover {
 .right {
     float: right;
 }
+
+footer {
+    margin-top: 15px; padding: 5px;
+    border-style: solid;
+    border-width: 1px 0px 0px 0px;
+    border-color: gray;
+    text-align: center;
+    font-size: 0.8em;
+}
