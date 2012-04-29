@@ -76,7 +76,7 @@ jQuery ->
 
                 i += 1
             else
-                document.title = "読了!"
+                document.title = "読了"
                 timer.postMessage 0
         timer.postMessage interval
 

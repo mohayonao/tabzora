@@ -76,7 +76,7 @@
           $progress.text("" + MM + "分" + SS + "秒");
           return i += 1;
         } else {
-          document.title = "読了!";
+          document.title = "読了";
           return timer.postMessage(0);
         }
       };
