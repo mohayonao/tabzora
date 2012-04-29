@@ -41,11 +41,11 @@ jQuery ->
 
     bookinfo = (item, finished)->
         $info.empty()
-        $(document.createElement("a"))
-            .attr("target", "aozora").attr("href", item.link).text(item.title)
-            .appendTo($info)
         $(document.createElement("span"))
-            .text("/#{item.author}")
+            .text("#{item.title}/#{item.author} → ")
+            .appendTo($info)
+        $(document.createElement("a"))
+            .attr("target", "aozora").attr("href", item.link).text("青空文庫で読む")
             .appendTo($info)
         $div = $(document.createElement("div"))
             .css("float", "right").appendTo($info)

@@ -49,8 +49,8 @@
     bookinfo = function(item, finished) {
       var $div;
       $info.empty();
-      $(document.createElement("a")).attr("target", "aozora").attr("href", item.link).text(item.title).appendTo($info);
-      $(document.createElement("span")).text("/" + item.author).appendTo($info);
+      $(document.createElement("span")).text("" + item.title + "/" + item.author + " → ").appendTo($info);
+      $(document.createElement("a")).attr("target", "aozora").attr("href", item.link).text("青空文庫で読む").appendTo($info);
       $div = $(document.createElement("div")).css("float", "right").appendTo($info);
       $(document.createElement("span")).text("読了予定: " + (datetimeformat(finished)) + " / 残り: ").appendTo($div);
       return $(document.createElement("span")).text("00分00秒").appendTo($div);
