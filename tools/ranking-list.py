@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import sys
 import urllib
 
 from BeautifulSoup import BeautifulSoup
@@ -9,7 +10,6 @@ from BeautifulSoup import BeautifulSoup
 
 RANKING_URL = "http://www.aozora.gr.jp/access_ranking/2012_03_txt.html"    
 FORMAT = """      <li id="%(link)s">%(title)s/%(author)s</li>"""
-LIMIT  = 100
 
 
 def getFileLink(url):
@@ -24,7 +24,11 @@ def getFileLink(url):
         return url[:url.rfind("/")] + matches.group(1)
 
 
-def main():
+def main(argc, argv):
+    if argc >= 2 and argv[1].isdigit():
+        limit = int(argv[1])
+    else:
+        limit = 100
     html = "".join( urllib.urlopen(RANKING_URL).readlines() )
     for i, tr in enumerate(BeautifulSoup(html).findAll("tr")):
         td = tr.findAll("td")
@@ -41,8 +45,8 @@ def main():
 
         print (FORMAT % dict(title=title, author=author, link=link)).encode("utf-8")
         
-        if i == LIMIT: break
+        if i == limit: break
 
         
 if __name__ == "__main__":
-    main()
+    main(len(sys.argv), sys.argv)
