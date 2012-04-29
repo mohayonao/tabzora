@@ -6,12 +6,21 @@
     <meta name="keywords" content="青空文庫,小説,文学,電子書籍,タブ,ブラウザ,便利">
     <meta name="description" content="タブ空文庫はタブブラウザ用の青空文庫リーダーです。ブラウザのタブにテキストがスクロール表示されるので、他のサイトを見ながらでもチラチラと作品を読むことができます。">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.socialbutton-1.8.1.js"></script>
     <script type="text/javascript" src="/javascripts/main.js"></script>
     <link type="text/css" media="screen" rel="stylesheet" href="/stylesheets/index.css" />
     <link rel="shortcut icon" href="/images/favicon.ico">
   </head>
   <body>
-    <h1><label for="query">タブ空文庫</label></h1>
+    <header>
+      <h1>タブ空文庫</h1>
+      <div id="social-button">
+        <div class="hatena"></div>
+        <div class="tweet"></div>
+        <div class="google_plus"></div>
+        <div class="facebook"></div>
+      </div>
+    </header>
     <input id="query" name="query" placeholder="読みたい作品のURLか作品名を入力して下さい。" />
     <section id="info"></section>
     <section id="usage">

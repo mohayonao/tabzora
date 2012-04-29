@@ -74,3 +74,18 @@ jQuery ->
                 document.title = "読了!"
                 timer.postMessage 0
         timer.postMessage interval
+
+    # social buttons
+    social_url = "http://tabzora.herokuapp.com/"
+    sb = $("#social-button")
+    $(".hatena", sb).socialbutton "hatena",
+        button:"horizontal", url: social_url
+
+    $(".tweet", sb).socialbutton "twitter",
+        button:"horizontal", lang:"en", url: social_url
+
+    $(".google_plus", sb).socialbutton "google_plusone",
+        button:"medium", count:false, url: social_url
+
+    $(".facebook", sb).socialbutton "facebook_like",
+        button:"button_count", url: social_url

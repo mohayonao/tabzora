@@ -3,7 +3,7 @@
   "use strict";
 
   jQuery(function() {
-    var $info, $query, NOP, bookinfo, datetimeformat, play, read, timer, withkeypress, _ref;
+    var $info, $query, NOP, bookinfo, datetimeformat, play, read, sb, social_url, timer, withkeypress, _ref;
     NOP = function() {};
     if (/mac.*firefox/i.test(navigator.userAgent)) {
       setInterval(NOP, 500);
@@ -59,7 +59,7 @@
       return $(document.createElement("span")).text("00分00秒").appendTo($div);
     };
     timer = new Worker("/javascripts/muteki-timer.js");
-    return play = function(item, length, interval) {
+    play = function(item, length, interval) {
       var $progress, finished, i, imax, text, _ref1;
       text = item.text;
       finished = new Date(+new Date() + interval * text.length);
@@ -81,6 +81,26 @@
       };
       return timer.postMessage(interval);
     };
+    social_url = "http://tabzora.herokuapp.com/";
+    sb = $("#social-button");
+    $(".hatena", sb).socialbutton("hatena", {
+      button: "horizontal",
+      url: social_url
+    });
+    $(".tweet", sb).socialbutton("twitter", {
+      button: "horizontal",
+      lang: "en",
+      url: social_url
+    });
+    $(".google_plus", sb).socialbutton("google_plusone", {
+      button: "medium",
+      count: false,
+      url: social_url
+    });
+    return $(".facebook", sb).socialbutton("facebook_like", {
+      button: "button_count",
+      url: social_url
+    });
   });
 
 }).call(this);
