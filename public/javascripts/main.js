@@ -3,7 +3,7 @@
   "use strict";
 
   jQuery(function() {
-    var $info, $query, NOP, bookinfo, datetimeformat, play, read, timer, _ref;
+    var $info, $query, NOP, bookinfo, datetimeformat, play, read, timer, withkeypress, _ref;
     NOP = function() {};
     if (/mac.*firefox/i.test(navigator.userAgent)) {
       setInterval(NOP, 500);
@@ -18,10 +18,17 @@
         return read(query);
       });
     });
+    withkeypress = false;
+    $query.on("keypress", function() {
+      return withkeypress = true;
+    });
     $query.on("keyup", function(e) {
-      if (e.keyCode === 13) {
-        return read(this.value.trim());
+      var query;
+      query = this.value.trim();
+      if (query.length && withkeypress && e.keyCode === 13) {
+        read(query);
       }
+      return withkeypress = false;
     });
     read = function(query) {
       $info.text("読み込み中です...");
@@ -30,7 +37,8 @@
         if (res !== "") {
           return play(JSON.parse(res), 20, 250);
         } else {
-          return $info.text = "invalid?";
+          query = decodeURIComponent(query);
+          return $info.text("『" + query + "』は見つかりませんでした。");
         }
       });
     };

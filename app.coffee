@@ -5,6 +5,11 @@ express = require "express"
 crypto  = require "crypto"
 Iconv   = require("iconv").Iconv
 
+do ->
+    filepath = "#{__dirname}/devenv.json"
+    if path.existsSync filepath
+        for key, value of JSON.parse(fs.readFileSync(filepath, "utf-8"))
+            process.env[key] = value
 app = module.exports = express.createServer()
 
 app.configure ->
@@ -25,7 +30,9 @@ aozora_parse = (html)->
         return {title:title, author:author, text:text}
 
 
-get_aozora = (uri, callback)->
+get_aozora = (uri_path, callback)->
+    uri = host:"mirror.aozora.gr.jp", path:uri_path
+
     sha1sum = crypto.createHash "sha1"
     sha1sum.update uri.path
     digest = sha1sum.digest "hex"
@@ -48,7 +55,7 @@ get_aozora_from_web = (uri, filename, callback)->
         res.setEncoding "binary"
         res.on "data", (chunk)->
             body.push chunk
-        res.on "end", ()->
+        res.on "end", ->
             body = new Buffer(body.join(""), "binary")
             html = iconv.convert(body).toString()
             item = aozora_parse(html)
@@ -60,15 +67,36 @@ get_aozora_from_web = (uri, filename, callback)->
                 fs.writeFile filename, json
                 json
 
+
+google_search = (query, callback)->
+    api_key = process.env.YAHOO_API_KEY
+
+    uri = {}
+    uri.host = "search.yahooapis.jp"
+    uri.path = "/WebSearchService/V2/webSearch?appid=#{api_key}&query=#{query}&site=www.aozora.gr.jp&format=html&results=1"
+
+    http.get uri, (res)->
+        body = ""
+        res.on "data", (chunk)->
+            body += chunk
+        res.on "end", ->
+            re = /(http:\/\/www\.aozora\.gr\.jp\/cards\/(?:\d+)\/files\/(?:\d+_\d+)\.html)/gm
+            matches = re.exec body
+            callback if matches then matches[1].trim() else ""
+
+
 app.get "/q/:query?", (req, res)->
     re = /^(?:http:\/\/www\.aozora\.gr\.jp)?(\/cards\/(?:\d+)\/files\/(?:\d+)_(?:\d+)\.html)$/
     matches = re.exec req.params.query
 
     if matches
-        uri = host:"mirror.aozora.gr.jp", path:matches[1]
-        get_aozora uri, (result)-> res.send result
-    else
-        res.send ""
+        get_aozora matches[1], (result)-> res.send result
+    else google_search req.params.query, (result)->
+        matches = re.exec result
+        if matches
+            get_aozora matches[1], (result)-> res.send result
+        else
+            res.send ""
 
 app.get "/", (req, res)->
     res.sendfile "#{__dirname}/views/index.html"

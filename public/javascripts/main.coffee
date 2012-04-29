@@ -15,8 +15,12 @@ jQuery ->
             $query.val query
             read query
 
+    withkeypress = false
+    $query.on "keypress", -> withkeypress = true
     $query.on "keyup", (e)->
-         read this.value.trim() if e.keyCode == 13
+        query = this.value.trim()
+        read query if query.length and withkeypress and e.keyCode == 13
+        withkeypress = false
 
     read = (query)->
         $info.text "読み込み中です..."
@@ -24,7 +28,9 @@ jQuery ->
         jQuery.get "/q/#{query}", (res)->
             if res != ""
                 play JSON.parse(res), 20, 250
-            else $info.text = "invalid?"
+            else
+                query = decodeURIComponent query
+                $info.text "『#{query}』は見つかりませんでした。"
 
     datetimeformat = (dt)->
         HH = ("0" + dt.getHours()  ).substr -2
