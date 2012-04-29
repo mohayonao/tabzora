@@ -18,6 +18,11 @@ app.configure ->
     app.use app.router
     app.use express.static("#{__dirname}/public")
 
+app.configure "development", ->
+    app.use express.errorHandler(dumpExceptions:true, showStack:true)
+
+app.configure "production", ->
+    app.use express.errorHandler()
 
 aozora_parse = (html)->
     re = /<h1 class="title">(.+?)<\/h1>(?:[\s\S]*?)<h2 class="author">(.+?)<\/h2>(?:[\s\S]*?)<div class="main_text">([\s\S]+)<div class="bibliographical_information">/
