@@ -8,12 +8,8 @@ jQuery ->
         setInterval NOP, 500
 
     [$query, $info] = [$("#query"), $("#info")]
+    timer = new Worker("/javascripts/muteki-timer.js")
 
-    $("#booklist li").each ->
-        $(this).on "click", =>
-            query = $(this).attr("id")
-            $query.val query
-            read query
 
     withkeypress = false
     $query.on "keypress", -> withkeypress = true
@@ -23,6 +19,8 @@ jQuery ->
         withkeypress = false
 
     read = (query)->
+        timer.postMessage 0
+        document.title = "タブ空文庫"
         $info.text "読み込み中です..."
         query = encodeURIComponent query
         jQuery.get "/q/#{query}", (res)->
@@ -53,7 +51,6 @@ jQuery ->
             .appendTo($div)
         $(document.createElement("span")).text("00分00秒").appendTo($div)
 
-    timer = new Worker("/javascripts/muteki-timer.js")
     play = (item, length, interval)->
         text = item.text
         finished = new Date(+new Date() + interval * text.length)
@@ -74,6 +71,13 @@ jQuery ->
                 document.title = "読了!"
                 timer.postMessage 0
         timer.postMessage interval
+
+    # booklist
+    $("#booklist li").each ->
+        $(this).on "click", =>
+            query = $(this).attr("id")
+            $query.val query
+            read query
 
     # social buttons
     social_url = "http://tabzora.herokuapp.com/"

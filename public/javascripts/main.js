@@ -9,15 +9,7 @@
       setInterval(NOP, 500);
     }
     _ref = [$("#query"), $("#info")], $query = _ref[0], $info = _ref[1];
-    $("#booklist li").each(function() {
-      var _this = this;
-      return $(this).on("click", function() {
-        var query;
-        query = $(_this).attr("id");
-        $query.val(query);
-        return read(query);
-      });
-    });
+    timer = new Worker("/javascripts/muteki-timer.js");
     withkeypress = false;
     $query.on("keypress", function() {
       return withkeypress = true;
@@ -31,6 +23,8 @@
       return withkeypress = false;
     });
     read = function(query) {
+      timer.postMessage(0);
+      document.title = "タブ空文庫";
       $info.text("読み込み中です...");
       query = encodeURIComponent(query);
       return jQuery.get("/q/" + query, function(res) {
@@ -58,7 +52,6 @@
       $(document.createElement("span")).text("読了予定時間: " + (datetimeformat(finished)) + " / 残り: ").appendTo($div);
       return $(document.createElement("span")).text("00分00秒").appendTo($div);
     };
-    timer = new Worker("/javascripts/muteki-timer.js");
     play = function(item, length, interval) {
       var $progress, finished, i, imax, text, _ref1;
       text = item.text;
@@ -81,6 +74,15 @@
       };
       return timer.postMessage(interval);
     };
+    $("#booklist li").each(function() {
+      var _this = this;
+      return $(this).on("click", function() {
+        var query;
+        query = $(_this).attr("id");
+        $query.val(query);
+        return read(query);
+      });
+    });
     social_url = "http://tabzora.herokuapp.com/";
     sb = $("#social-button");
     $(".hatena", sb).socialbutton("hatena", {
