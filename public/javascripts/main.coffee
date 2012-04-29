@@ -76,7 +76,7 @@ jQuery ->
         timer.postMessage interval
 
     # booklist
-    $("#booklist li").each ->
+    $(".booklist li").each ->
         $(this).on "click", =>
             query = $(this).attr("id")
             $query.val query

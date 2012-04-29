@@ -40,12 +40,12 @@ a:hover {
     margin: 25px;
 }
 
-#booklist {
+.booklist {
     margin: 0px; padding: 5px;
     line-height: 32px;
 }
     
-#booklist li {
+.booklist li {
     color: blue;
     text-decoration: underline;
     cursor: pointer;
@@ -53,7 +53,7 @@ a:hover {
     padding: 0px 5px;
 }
 
-#booklist li:hover {
+.booklist li:hover {
     color: deeppink;
 }
 

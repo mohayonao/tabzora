@@ -77,7 +77,7 @@
       };
       return timer.postMessage(interval);
     };
-    $("#booklist li").each(function() {
+    $(".booklist li").each(function() {
       var _this = this;
       return $(this).on("click", function() {
         var query;
