@@ -37,39 +37,44 @@
       });
     };
     datetimeformat = function(dt) {
-      var HH, MM, SS, dd, mm, yy;
+      var HH, MM, dd, mm, yy;
       yy = dt.getFullYear();
       mm = ("0" + (dt.getMonth() + 1)).substr(-2);
       dd = ("0" + dt.getDate()).substr(-2);
       HH = ("0" + dt.getHours()).substr(-2);
       MM = ("0" + dt.getMinutes()).substr(-2);
-      SS = ("0" + dt.getSeconds()).substr(-2);
-      return "" + yy + "年" + mm + "月" + dd + "日 " + HH + "時" + MM + "分" + SS + "秒";
+      return "" + yy + "年" + mm + "月" + dd + "日 " + HH + "時" + MM + "分";
     };
-    bookinfo = function(item, finished) {
-      var $div;
+    bookinfo = function(item) {
+      var $div, $finished, $progress;
       $info.empty();
       $(document.createElement("span")).text("" + item.title + "/" + item.author + " → ").appendTo($info);
       $(document.createElement("a")).attr("target", "aozora").attr("href", item.link).text("青空文庫で読む").appendTo($info);
       $div = $(document.createElement("div")).css("float", "right").appendTo($info);
-      $(document.createElement("span")).text("読了予定: " + (datetimeformat(finished)) + " / 残り: ").appendTo($div);
-      return $(document.createElement("span")).text("00分00秒").appendTo($div);
+      $(document.createElement("span")).text("読了予定: ").appendTo($div);
+      $finished = $(document.createElement("span")).text(datetimeformat(new Date)).appendTo($div);
+      $(document.createElement("span")).text(" / 残り: ").appendTo($div);
+      $progress = $(document.createElement("span")).text("0分00秒").appendTo($div);
+      return [$finished, $progress];
     };
     play = function(item, length, interval) {
-      var $progress, finished, i, imax, text, _ref1;
+      var $finished, $progress, i, imax, text, _ref1, _ref2;
       text = item.text;
-      finished = new Date(+new Date() + interval * text.length);
-      $progress = bookinfo(item, finished);
-      _ref1 = [0, text.length], i = _ref1[0], imax = _ref1[1];
+      _ref1 = bookinfo(item), $finished = _ref1[0], $progress = _ref1[1];
+      _ref2 = [0, text.length], i = _ref2[0], imax = _ref2[1];
       timer.onmessage = function() {
-        var MM, SS, remain;
+        var MM, SS, finished, remain;
         if (i < text.length) {
           document.title = text.substr(i, length);
-          i += 1;
-          remain = ((finished - +new Date()) / 1000) | 0;
+          if (i % 20) {
+            finished = new Date(+new Date() + interval * (imax - i));
+            $finished.text(datetimeformat(finished));
+          }
+          remain = ((imax - i) * interval / 1000) | 0;
           SS = ("0" + (remain % 60)).substr(-2);
           MM = (remain / 60) | 0;
-          return $progress.text("" + MM + "分" + SS + "秒");
+          $progress.text("" + MM + "分" + SS + "秒");
+          return i += 1;
         } else {
           document.title = "読了!";
           return timer.postMessage(0);

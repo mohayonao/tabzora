@@ -36,10 +36,9 @@ jQuery ->
         dd = ("0" + dt.getDate()   ).substr -2
         HH = ("0" + dt.getHours()  ).substr -2
         MM = ("0" + dt.getMinutes()).substr -2
-        SS = ("0" + dt.getSeconds()).substr -2
-        "#{yy}年#{mm}月#{dd}日 #{HH}時#{MM}分#{SS}秒"
+        "#{yy}年#{mm}月#{dd}日 #{HH}時#{MM}分"
 
-    bookinfo = (item, finished)->
+    bookinfo = (item)->
         $info.empty()
         $(document.createElement("span"))
             .text("#{item.title}/#{item.author} → ")
@@ -49,27 +48,33 @@ jQuery ->
             .appendTo($info)
         $div = $(document.createElement("div"))
             .css("float", "right").appendTo($info)
-        $(document.createElement("span"))
-            .text("読了予定: #{datetimeformat(finished)} / 残り: ")
-            .appendTo($div)
-        $(document.createElement("span")).text("00分00秒").appendTo($div)
+
+        $(document.createElement("span")).text("読了予定: ").appendTo($div)
+        $finished = $(document.createElement("span")).text(datetimeformat new Date).appendTo($div)
+        $(document.createElement("span")).text(" / 残り: ").appendTo($div)
+        $progress = $(document.createElement("span")).text("0分00秒").appendTo($div)
+
+        [$finished, $progress]
 
     play = (item, length, interval)->
         text = item.text
-        finished = new Date(+new Date() + interval * text.length)
-        $progress = bookinfo item, finished
+
+        [$finished, $progress] = bookinfo item
 
         [i, imax] = [0, text.length]
 
         timer.onmessage = ->
             if i < text.length
                 document.title = text.substr i, length
-                i += 1
-
-                remain = ((finished - +new Date()) / 1000)|0
+                if i % 20
+                    finished = new Date(+new Date() + interval * (imax - i))
+                    $finished.text datetimeformat(finished)
+                remain = ((imax - i) * interval / 1000)|0
                 SS = ("0" + (remain % 60)).substr -2
                 MM = (remain / 60)|0
                 $progress.text "#{MM}分#{SS}秒"
+
+                i += 1
             else
                 document.title = "読了!"
                 timer.postMessage 0
