@@ -71,6 +71,6 @@ jQuery ->
                 MM = (remain / 60)|0
                 $progress.text "#{MM}分#{SS}秒"
             else
-                document.title = "end"
+                document.title = "読了!"
                 timer.postMessage 0
         timer.postMessage interval

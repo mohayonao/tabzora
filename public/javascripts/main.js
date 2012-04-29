@@ -75,7 +75,7 @@
           MM = (remain / 60) | 0;
           return $progress.text("" + MM + "分" + SS + "秒");
         } else {
-          document.title = "end";
+          document.title = "読了!";
           return timer.postMessage(0);
         }
       };
