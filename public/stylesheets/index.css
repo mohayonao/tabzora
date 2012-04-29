@@ -1,16 +1,12 @@
+body {
+    margin: 10px; padding: 0px;
+}
+
 h1 {
-    margin: 0px; padding: 0px;
+    margin: 0px 0px 20px 0px; padding: 0px;
     font-size: 64px;
     font-family: serif;
     text-shadow: 3px 3px 10px gray;
-}
-
-input {
-    margin: 0px; padding: 10px;
-    font-size: 24px;
-    width: 100%;
-    background: #dcdcdc;
-    border-style: none;
 }
 
 a {
@@ -19,6 +15,15 @@ a {
 
 a:hover {
     color: deeppink;
+}
+
+#query {
+    margin: 0px; padding: 15px;
+    width: 100%;
+    font-size: 24px;
+    background: #dcdcdc;
+    border-style: none;
+    box-sizing: border-box;    
 }
 
 #info {
@@ -30,6 +35,11 @@ a:hover {
     margin: 25px;
 }
 
+#booklist {
+    margin: 0px; padding: 5px;
+    line-height: 32px;
+}
+    
 #booklist li {
     color: blue;
     text-decoration: underline;
