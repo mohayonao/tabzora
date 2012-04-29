@@ -37,11 +37,14 @@
       });
     };
     datetimeformat = function(dt) {
-      var HH, MM, SS;
+      var HH, MM, SS, dd, mm, yy;
+      yy = dt.getFullYear();
+      mm = ("0" + (dt.getMonth() + 1)).substr(-2);
+      dd = ("0" + dt.getDate()).substr(-2);
       HH = ("0" + dt.getHours()).substr(-2);
       MM = ("0" + dt.getMinutes()).substr(-2);
       SS = ("0" + dt.getSeconds()).substr(-2);
-      return "" + HH + "時" + MM + "分" + SS + "秒";
+      return "" + yy + "年" + mm + "月" + dd + "日 " + HH + "時" + MM + "分" + SS + "秒";
     };
     bookinfo = function(item, finished) {
       var $div;
@@ -49,7 +52,7 @@
       $(document.createElement("a")).attr("target", "aozora").attr("href", item.link).text(item.title).appendTo($info);
       $(document.createElement("span")).text("/" + item.author).appendTo($info);
       $div = $(document.createElement("div")).css("float", "right").appendTo($info);
-      $(document.createElement("span")).text("読了予定時間: " + (datetimeformat(finished)) + " / 残り: ").appendTo($div);
+      $(document.createElement("span")).text("読了予定: " + (datetimeformat(finished)) + " / 残り: ").appendTo($div);
       return $(document.createElement("span")).text("00分00秒").appendTo($div);
     };
     play = function(item, length, interval) {
