@@ -77,6 +77,12 @@
       };
       return timer.postMessage(interval);
     };
+    $("#random").on("click", function() {
+      var cands, index;
+      cands = $(".booklist li");
+      index = (Math.random() * cands.length) | 0;
+      return $(cands[index]).trigger("click");
+    });
     $(".booklist li").each(function() {
       var _this = this;
       return $(this).on("click", function() {

@@ -75,6 +75,12 @@ jQuery ->
                 timer.postMessage 0
         timer.postMessage interval
 
+    # random
+    $("#random").on "click", ->
+        cands = $(".booklist li")
+        index = (Math.random() * cands.length)|0
+        $(cands[index]).trigger "click"
+
     # booklist
     $(".booklist li").each ->
         $(this).on "click", =>

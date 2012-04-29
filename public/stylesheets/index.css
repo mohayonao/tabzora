@@ -61,6 +61,10 @@ a:hover {
     float: right;
 }
 
+.random {
+    padding: 10px;
+ }
+
 footer {
     margin-top: 15px; padding: 5px;
     border-style: solid;
