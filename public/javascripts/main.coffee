@@ -8,8 +8,9 @@ jQuery ->
         setInterval NOP, 500
 
     [$query, $info] = [$("#query"), $("#info")]
-    timer = new Worker("/javascripts/muteki-timer.js")
+    [$ReadInterval, $IsPlaying] = [0, false]
 
+    timer = new Worker("/javascripts/muteki-timer.js")
 
     withkeypress = false
     $query.on "keypress", -> withkeypress = true
@@ -20,12 +21,13 @@ jQuery ->
 
     read = (query)->
         timer.postMessage 0
+        $IsPlaying = false
         document.title = "タブ空文庫"
         $info.text "読み込み中です..."
         query = encodeURIComponent query
         jQuery.get "/q/#{query}", (res)->
             if res != ""
-                play JSON.parse(res), 20, 250
+                play JSON.parse(res), 20
             else
                 query = decodeURIComponent query
                 $info.text "『#{query}』は見つかりませんでした。"
@@ -56,20 +58,18 @@ jQuery ->
 
         [$finished, $progress]
 
-    play = (item, length, interval)->
+    play = (item, length)->
         text = item.text
-
         [$finished, $progress] = bookinfo item
-
         [i, imax] = [0, text.length]
 
         timer.onmessage = ->
             if i < text.length
                 document.title = text.substr i, length
                 if i % 20
-                    finished = new Date(+new Date() + interval * (imax - i))
+                    finished = new Date(+new Date() + $ReadInterval * (imax - i))
                     $finished.text datetimeformat(finished)
-                remain = ((imax - i) * interval / 1000)|0
+                remain = ((imax - i) * $ReadInterval / 1000)|0
                 SS = ("0" + (remain % 60)).substr -2
                 MM = (remain / 60)|0
                 $progress.text "#{MM}分#{SS}秒"
@@ -78,13 +78,24 @@ jQuery ->
             else
                 document.title = "読了"
                 timer.postMessage 0
-        timer.postMessage interval
+        timer.postMessage $ReadInterval
+        $IsPlaying = true
 
     # random
     $("#random").on "click", ->
         cands = $(".booklist li")
         index = (Math.random() * cands.length)|0
         $(cands[index]).trigger "click"
+
+    # speed
+    (speed_li = $("#speed li")).each (i)->
+        interval = [0, 600, 250, 75][i]
+        $(this).on "click", =>
+            speed_li.removeClass "selected"
+            $(this).addClass "selected"
+            $ReadInterval = interval
+            if $IsPlaying then timer.postMessage $ReadInterval
+    $(speed_li[2]).trigger "click"
 
     # booklist
     $(".booklist li").each ->

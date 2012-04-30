@@ -18,6 +18,16 @@ a:hover {
     color: deeppink;
 }
 
+li {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;    
+}
+
+li:hover {
+    color: deeppink;
+}
+
 #query {
     margin: 25px 0px 0px 0px; padding: 15px;
     width: 100%;
@@ -36,30 +46,44 @@ a:hover {
     margin: 25px;
 }
 
+
+#control {
+    height: 40px;
+}
+
+#random {
+    float: left;
+    padding: 10px;
+ }
+
+#speed {
+    float: right;
+    margin: 0px; padding: 10px;
+    list-style: none;
+}
+
+#speed li {
+    display: inline;
+    padding: 2px;
+}
+
+.selected {
+    font-weight: bold;
+}
+
 .booklist {
     margin: 0px; padding: 5px;
     line-height: 32px;
 }
     
 .booklist li {
-    color: blue;
-    text-decoration: underline;
-    cursor: pointer;
     display: inline;
     padding: 0px 5px;
-}
-
-.booklist li:hover {
-    color: deeppink;
 }
 
 .right {
     float: right;
 }
-
-.random {
-    padding: 10px;
- }
 
 footer {
     margin-top: 15px; padding: 5px;

@@ -3,12 +3,13 @@
   "use strict";
 
   jQuery(function() {
-    var $info, $query, NOP, bookinfo, datetimeformat, play, read, sb, social_url, timer, withkeypress, _ref;
+    var $IsPlaying, $ReadInterval, $info, $query, NOP, bookinfo, datetimeformat, play, read, sb, social_url, speed_li, timer, withkeypress, _ref, _ref1;
     NOP = function() {};
     if (/mac.*firefox/i.test(navigator.userAgent)) {
       setInterval(NOP, 500);
     }
     _ref = [$("#query"), $("#info")], $query = _ref[0], $info = _ref[1];
+    _ref1 = [0, false], $ReadInterval = _ref1[0], $IsPlaying = _ref1[1];
     timer = new Worker("/javascripts/muteki-timer.js");
     withkeypress = false;
     $query.on("keypress", function() {
@@ -24,12 +25,13 @@
     });
     read = function(query) {
       timer.postMessage(0);
+      $IsPlaying = false;
       document.title = "タブ空文庫";
       $info.text("読み込み中です...");
       query = encodeURIComponent(query);
       return jQuery.get("/q/" + query, function(res) {
         if (res !== "") {
-          return play(JSON.parse(res), 20, 250);
+          return play(JSON.parse(res), 20);
         } else {
           query = decodeURIComponent(query);
           return $info.text("『" + query + "』は見つかりませんでした。");
@@ -57,20 +59,20 @@
       $progress = $(document.createElement("span")).text("0分00秒").appendTo($div);
       return [$finished, $progress];
     };
-    play = function(item, length, interval) {
-      var $finished, $progress, i, imax, text, _ref1, _ref2;
+    play = function(item, length) {
+      var $finished, $progress, i, imax, text, _ref2, _ref3;
       text = item.text;
-      _ref1 = bookinfo(item), $finished = _ref1[0], $progress = _ref1[1];
-      _ref2 = [0, text.length], i = _ref2[0], imax = _ref2[1];
+      _ref2 = bookinfo(item), $finished = _ref2[0], $progress = _ref2[1];
+      _ref3 = [0, text.length], i = _ref3[0], imax = _ref3[1];
       timer.onmessage = function() {
         var MM, SS, finished, remain;
         if (i < text.length) {
           document.title = text.substr(i, length);
           if (i % 20) {
-            finished = new Date(+new Date() + interval * (imax - i));
+            finished = new Date(+new Date() + $ReadInterval * (imax - i));
             $finished.text(datetimeformat(finished));
           }
-          remain = ((imax - i) * interval / 1000) | 0;
+          remain = ((imax - i) * $ReadInterval / 1000) | 0;
           SS = ("0" + (remain % 60)).substr(-2);
           MM = (remain / 60) | 0;
           $progress.text("" + MM + "分" + SS + "秒");
@@ -80,7 +82,8 @@
           return timer.postMessage(0);
         }
       };
-      return timer.postMessage(interval);
+      timer.postMessage($ReadInterval);
+      return $IsPlaying = true;
     };
     $("#random").on("click", function() {
       var cands, index;
@@ -88,6 +91,20 @@
       index = (Math.random() * cands.length) | 0;
       return $(cands[index]).trigger("click");
     });
+    (speed_li = $("#speed li")).each(function(i) {
+      var interval,
+        _this = this;
+      interval = [0, 600, 250, 75][i];
+      return $(this).on("click", function() {
+        speed_li.removeClass("selected");
+        $(_this).addClass("selected");
+        $ReadInterval = interval;
+        if ($IsPlaying) {
+          return timer.postMessage($ReadInterval);
+        }
+      });
+    });
+    $(speed_li[2]).trigger("click");
     $(".booklist li").each(function() {
       var _this = this;
       return $(this).on("click", function() {
