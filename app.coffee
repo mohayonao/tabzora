@@ -73,7 +73,7 @@ get_aozora_from_web = (uri, filename, callback)->
                 json
 
 
-google_search = (query, callback)->
+search = (query, callback)->
     api_key = process.env.YAHOO_API_KEY
 
     uri = {}
@@ -96,7 +96,7 @@ app.get "/q/:query?", (req, res)->
 
     if matches
         get_aozora matches[1], (result)-> res.send result
-    else google_search req.params.query, (result)->
+    else search req.params.query, (result)->
         matches = re.exec result
         if matches
             get_aozora matches[1], (result)-> res.send result
