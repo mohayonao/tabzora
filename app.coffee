@@ -26,12 +26,13 @@ app.configure "production", ->
 
 aozora_parse = (html)->
     re = /<h1 class="title">(.+?)<\/h1>(?:[\s\S]*?)<h2 class="author">(.+?)<\/h2>(?:[\s\S]*?)<div class="main_text">([\s\S]+)<div class="bibliographical_information">/
+    console.log "parse!!"
     if matches = re.exec html
         title  = matches[1]
         author = matches[2]
         text = matches[3].replace(/<ruby><rb>(.+?)<\/rb>.*?<\/ruby>/g, "$1")
         text = text.replace(/<.*?>/g, "")
-        return {title:title, author:author, text:text}
+        title:title, author:author, text:text
 
 
 get_aozora = (uri_path, callback)->
@@ -75,9 +76,9 @@ get_aozora_from_web = (uri, filename, callback)->
 search = (query, callback)->
     api_key = process.env.YAHOO_API_KEY
 
-    uri = {}
-    uri.host = "search.yahooapis.jp"
-    uri.path = "/WebSearchService/V2/webSearch?appid=#{api_key}&query=#{query}&site=www.aozora.gr.jp&format=html&results=1"
+    uri =
+          host:"search.yahooapis.jp"
+          path:"/WebSearchService/V2/webSearch?appid=#{api_key}&query=#{query}&site=www.aozora.gr.jp&format=html"
 
     http.get uri, (res)->
         body = ""
