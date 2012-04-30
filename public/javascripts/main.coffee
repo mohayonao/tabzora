@@ -8,8 +8,8 @@ jQuery ->
         setInterval NOP, 500
 
     [$query, $info] = [$("#query"), $("#info")]
-    [$ReadInterval, $IsPlaying] = [0, false]
-
+    readInterval = 0
+    isPlaying = false
     timer = new Worker("/javascripts/muteki-timer.js")
 
     withkeypress = false
@@ -21,7 +21,7 @@ jQuery ->
 
     read = (query)->
         timer.postMessage 0
-        $IsPlaying = false
+        isPlaying = false
         document.title = "タブ空文庫"
         $info.text "読み込み中です..."
         query = encodeURIComponent query
@@ -67,9 +67,9 @@ jQuery ->
             if i < text.length
                 document.title = text.substr i, length
                 if i % 20
-                    finished = new Date(+new Date() + $ReadInterval * (imax - i))
+                    finished = new Date(+new Date() + readInterval * (imax - i))
                     $finished.text datetimeformat(finished)
-                remain = ((imax - i) * $ReadInterval / 1000)|0
+                remain = ((imax - i) * readInterval / 1000)|0
                 SS = ("0" + (remain % 60)).substr -2
                 MM = (remain / 60)|0
                 $progress.text "#{MM}分#{SS}秒"
@@ -78,8 +78,8 @@ jQuery ->
             else
                 document.title = "読了"
                 timer.postMessage 0
-        timer.postMessage $ReadInterval
-        $IsPlaying = true
+        timer.postMessage readInterval
+        isPlaying = true
 
     # random
     $("#random").on "click", ->
@@ -93,8 +93,8 @@ jQuery ->
         $(this).on "click", =>
             speed_li.removeClass "selected"
             $(this).addClass "selected"
-            $ReadInterval = interval
-            if $IsPlaying then timer.postMessage $ReadInterval
+            readInterval = interval
+            if isPlaying then timer.postMessage readInterval
     $(speed_li[2]).trigger "click"
 
     # booklist
