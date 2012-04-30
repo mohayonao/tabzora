@@ -26,8 +26,7 @@ app.configure "production", ->
 
 aozora_parse = (html)->
     re = /<h1 class="title">(.+?)<\/h1>(?:[\s\S]*?)<h2 class="author">(.+?)<\/h2>(?:[\s\S]*?)<div class="main_text">([\s\S]+)<div class="bibliographical_information">/
-    matches = re.exec html
-    if matches
+    if matches = re.exec html
         title  = matches[1]
         author = matches[2]
         text = matches[3].replace(/<ruby><rb>(.+?)<\/rb>.*?<\/ruby>/g, "$1")
@@ -92,16 +91,13 @@ search = (query, callback)->
 
 app.get "/q/:query?", (req, res)->
     re = /^(?:http:\/\/www\.aozora\.gr\.jp)?(\/cards\/(?:\d+)\/files\/(?:\d+)_(?:\d+)\.html)$/
-    matches = re.exec req.params.query
 
-    if matches
+    if matches = re.exec req.params.query
         get_aozora matches[1], (result)-> res.send result
     else search req.params.query, (result)->
-        matches = re.exec result
-        if matches
+        if matches = re.exec result
             get_aozora matches[1], (result)-> res.send result
-        else
-            res.send ""
+        else res.send ""
 
 app.get "/", (req, res)->
     res.sendfile "#{__dirname}/views/index.html"
